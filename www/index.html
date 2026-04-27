@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ResellKit Pro - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>ResellKit</h1>
+                <span class="version">PRO v3.0</span>
+            </div>
+            
+            <nav class="nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="items">
+                    <span class="icon">🎯</span> Articles
+                </a>
+                <a href="#" class="nav-item" data-page="calculator">
+                    <span class="icon">🧮</span> Calculateur
+                </a>
+                <a href="#" class="nav-item" data-page="alerts">
+                    <span class="icon">🔔</span> Alertes
+                </a>
+                <a href="#" class="nav-item" data-page="roland-garros">
+                    <span class="icon">🎾</span> Roland-Garros
+                </a>
+                <a href="#" class="nav-item" data-page="captcha">
+                    <span class="icon">⚠️</span> Captcha Inbox
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="icon">⚙️</span> Paramètres
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h2>Dashboard</h2>
+                <div class="header-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Articles</span>
+                        <span class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Profit estimé</span>
+                        <span class="stat-value">0 €</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Alertes actives</span>
+                        <span class="stat-value">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Areas -->
+            <div class="content-area active" id="page-dashboard">
+                <div class="grid-dashboard">
+                    <div class="card">
+                        <h3>Résumé du portefeuille</h3>
+                        <p class="empty-state">Aucun article enregistré. Ajoutez votre premier article pour commencer.</p>
+                        <button class="btn-primary" id="addItemBtn">+ Ajouter un article</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Performance récente</h3>
+                        <div class="chart-placeholder">
+                            <p>Graphe de performance ici</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Activités récentes</h3>
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <span class="activity-icon">🔍</span>
+                                <span class="activity-text">Extension installée avec succès</span>
+                                <span class="activity-time">Maintenant</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Actions rapides</h3>
+                        <div class="quick-actions">
+                            <button class="btn-secondary">Scanner une page</button>
+                            <button class="btn-secondary">Importer un fichier</button>
+                            <button class="btn-secondary">Exporter le portfolio</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Page -->
+            <div class="content-area" id="page-items">
+                <div class="toolbar">
+                    <input type="text" placeholder="Rechercher un article..." class="search-input">
+                    <button class="btn-primary" id="addNewItemBtn">+ Ajouter un article</button>
+                </div>
+                
+                <div class="items-list">
+                    <p class="empty-state">Aucun article dans votre portfolio. Ajoutez des articles pour suivre vos investissements.</p>
+                </div>
+            </div>
+
+            <!-- Calculator Page -->
+            <div class="content-area" id="page-calculator">
+                <div class="card calculator-card">
+                    <h3>Calculateur de Profit</h3>
+                    <form class="calculator-form">
+                        <div class="form-group">
+                            <label>Prix d'achat (€)</label>
+                            <input type="number" id="calcCost" step="0.01" placeholder="0.00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Prix de vente (€)</label>
+                            <input type="number" id="calcPrice" step="0.01" placeholder="0.00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Frais de plateforme (%)</label>
+                            <input type="number" id="calcFeePercent" step="0.1" placeholder="10" value="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Frais de port (€)</label>
+                            <input type="number" id="calcShipping" step="0.01" placeholder="0.00">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Frais fixes (€)</label>
+                            <input type="number" id="calcFixedFees" step="0.01" placeholder="0.30">
+                        </div>
+                        
+                        <button type="button" class="btn-primary" id="calculateBtn">Calculer</button>
+                    </form>
+                    
+                    <div class="results" id="calculatorResults" style="display: none;">
+                        <div class="result-row">
+                            <span>Profit brut:</span>
+                            <span id="resultGrossProfit" class="result-value">0.00 €</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Frais totaux:</span>
+                            <span id="resultTotalFees" class="result-value">0.00 €</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Profit net:</span>
+                            <span id="resultNetProfit" class="result-value net-profit">0.00 €</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Marge (%):</span>
+                            <span id="resultMargin" class="result-value">0.00%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Page -->
+            <div class="content-area" id="page-alerts">
+                <div class="toolbar">
+                    <input type="text" placeholder="Mot-clé pour l'alerte..." class="search-input">
+                    <button class="btn-primary" id="addAlertBtn">+ Nouvelle alerte</button>
+                </div>
+                
+                <div class="alerts-list">
+                    <p class="empty-state">Aucune alerte active. Créez des alertes pour être notifié des nouvelles opportunités.</p>
+                </div>
+            </div>
+
+            <!-- Roland-Garros Page -->
+            <div class="content-area" id="page-roland-garros">
+                <div class="card">
+                    <h3>Mode Roland-Garros</h3>
+                    <p>Surveillance automatique des ventes de billets Roland-Garros.</p>
+                    
+                    <div class="monitoring-controls">
+                        <label>
+                            <input type="checkbox" id="rgMonitorToggle">
+                            Activer la surveillance
+                        </label>
+                        
+                        <label>
+                            Intervalle de vérification:
+                            <select id="rgCheckInterval">
+                                <option value="30">30 secondes</option>
+                                <option value="60" selected>1 minute</option>
+                                <option value="180">3 minutes</option>
+                                <option value="300">5 minutes</option>
+                            </select>
+                        </label>
+                        
+                        <label>
+                            Budget maximum:
+                            <input type="number" id="rgBudget" step="10" placeholder="500">
+                        </label>
+                        
+                        <button class="btn-primary" id="startRgMonitor">Démarrer la surveillance</button>
+                    </div>
+                    
+                    <div class="monitoring-status">
+                        <div class="status-indicator">
+                            <span class="status-dot inactive"></span>
+                            <span id="rgStatusText">Inactif</span>
+                        </div>
+                        <div id="rgLogs">
+                            <p class="log-entry">En attente de démarrage...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Captcha Inbox Page -->
+            <div class="content-area" id="page-captcha">
+                <div class="card">
+                    <h3>Captcha Inbox - Détection seulement</h3>
+                    <p class="description">Détecte automatiquement les captchas sur les pages que vous visitez. Ne contourne jamais les captchas - uniquement la détection.</p>
+                    
+                    <div class="captcha-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Captchas détectés aujourd'hui</span>
+                            <span class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Dernière détection</span>
+                            <span class="stat-value">Aucune</span>
+                        </div>
+                    </div>
+                    
+                    <div class="captcha-list">
+                        <p class="empty-state">Aucun captcha détecté. Naviguez sur des sites de billetterie pour commencer la détection.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="content-area" id="page-settings">
+                <div class="card">
+                    <h3>Paramètres de l'extension</h3>
+                    
+                    <div class="settings-section">
+                        <h4>Préférences</h4>
+                        <label>
+                            <input type="checkbox" id="darkModeToggle">
+                            Mode sombre
+                        </label>
+                        
+                        <label>
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            Notifications
+                        </label>
+                        
+                        <label>
+                            <input type="checkbox" id="autoScanToggle">
+                            Scan automatique des pages
+                        </label>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Compte & Sauvegarde</h4>
+                        <label>
+                            Compte:
+                            <select id="accountType">
+                                <option value="free">Gratuit</option>
+                                <option value="pro">Pro</option>
+                            </select>
+                        </label>
+                        
+                        <button class="btn-secondary">Exporter les données</button>
+                        <button class="btn-secondary">Importer les données</button>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>À propos</h4>
+                        <p>ResellKit Pro v3.0</p>
+                        <p>Extension Chrome MV3 légale pour les revendeurs professionnels.</p>
+                        <button class="btn-secondary" id="resetDataBtn">Réinitialiser toutes les données</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Adding Items -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <h3>Ajouter un article</h3>
+            <form id="addItemForm">
+                <div class="form-group">
+                    <label>Nom du produit</label>
+                    <input type="text" id="modalItemName" placeholder="Nom du produit">
+                </div>
+                <div class="form-group">
+                    <label>Plateforme</label>
+                    <input type="text" id="modalItemPlatform" placeholder="Nike, eBay, etc">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prix d'achat (€)</label>
+                        <input type="number" id="modalItemCost" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Prix de vente (€)</label>
+                        <input type="number" id="modalItemPrice" step="0.01">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="modalCancel">Annuler</button>
+                    <button type="submit" class="btn-primary" id="modalSave">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
