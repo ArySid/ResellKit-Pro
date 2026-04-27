@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResellKit Pro - Side Panel</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="rk-sidepanel">
+    <header class="rk-sp-header">
+      <div class="rk-sp-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span>ResellKit Pro</span>
+      </div>
+      <button class="rk-sp-refresh" id="sp-refresh" title="Rafraichir">&#x21bb;</button>
+    </header>
+
+    <nav class="rk-sp-nav">
+      <button class="rk-sp-nav-btn active" data-view="overview">Apercu</button>
+      <button class="rk-sp-nav-btn" data-view="queues">Queues & Captchas</button>
+      <button class="rk-sp-nav-btn" data-view="rg">Roland-Garros</button>
+      <button class="rk-sp-nav-btn" data-view="portfolio">Portfolio</button>
+    </nav>
+
+    <main class="rk-sp-content">
+      <!-- OVERVIEW -->
+      <section class="rk-sp-view active" id="view-overview">
+        <div class="rk-sp-stats">
+          <div class="rk-sp-stat">
+            <span class="rk-sp-stat-value" id="sp-profit">0 €</span>
+            <span class="rk-sp-stat-label">Profit Total</span>
+          </div>
+          <div class="rk-sp-stat">
+            <span class="rk-sp-stat-value" id="sp-items">0</span>
+            <span class="rk-sp-stat-label">Items</span>
+          </div>
+          <div class="rk-sp-stat">
+            <span class="rk-sp-stat-value rk-green" id="sp-alerts">0</span>
+            <span class="rk-sp-stat-label">Alertes Actives</span>
+          </div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Statistiques</h3>
+          <canvas id="sp-chart" width="360" height="180"></canvas>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Scenarios</h3>
+          <div class="rk-sp-scenarios">
+            <div class="rk-sp-scenario">
+              <span>Buy 100 € / Sell 150 €</span>
+              <span class="rk-green">+25 € net</span>
+            </div>
+            <div class="rk-sp-scenario">
+              <span>Buy 100 € / Sell 130 €</span>
+              <span class="rk-yellow">+5 € net</span>
+            </div>
+            <div class="rk-sp-scenario">
+              <span>Buy 100 € / Sell 115 €</span>
+              <span class="rk-red">-10 € net</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUEUES & CAPTCHAS -->
+      <section class="rk-sp-view" id="view-queues">
+        <div class="rk-sp-section">
+          <h3>CAPTCHA Inbox</h3>
+          <p class="rk-sp-desc">CAPTCHAs detectes sur vos onglets. Resolvez-les manuellement.</p>
+          <div class="rk-sp-list" id="sp-captcha-list"></div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Files d attente</h3>
+          <div class="rk-sp-list" id="sp-queue-list"></div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Onglets Actifs</h3>
+          <div class="rk-sp-list" id="sp-tabs-list"></div>
+        </div>
+      </section>
+
+      <!-- ROLAND-GARROS -->
+      <section class="rk-sp-view" id="view-rg">
+        <div class="rk-sp-rg-header">
+          <span>🎾 Roland-Garros 2026</span>
+          <span class="rk-sp-rg-dates">25 mai - 7 juin</span>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Checklist Preparation</h3>
+          <div class="rk-sp-checklist" id="sp-rg-checklist"></div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Courts Disponibles</h3>
+          <div class="rk-sp-courts" id="sp-rg-courts"></div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Sessions</h3>
+          <div class="rk-sp-sessions" id="sp-rg-sessions"></div>
+        </div>
+        <div class="rk-sp-section">
+          <h3>Liens Officiels</h3>
+          <a href="https://billetterie.fft.fr" target="_blank" class="rk-sp-link">Billetterie FFT</a>
+          <a href="https://billetterie.fft.fr/revente" target="_blank" class="rk-sp-link">Revente Officielle</a>
+          <a href="https://www.rolandgarros.com" target="_blank" class="rk-sp-link">Site Officiel</a>
+          <a href="https://travel.rolandgarros.com" target="_blank" class="rk-sp-link">Travel</a>
+        </div>
+      </section>
+
+      <!-- PORTFOLIO -->
+      <section class="rk-sp-view" id="view-portfolio">
+        <div class="rk-sp-toolbar">
+          <span id="sp-portfolio-count">0 items</span>
+          <button class="rk-sp-btn-small" id="sp-export-btn">Export CSV</button>
+        </div>
+        <div class="rk-sp-list" id="sp-portfolio-list"></div>
+      </section>
+    </main>
+  </div>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
