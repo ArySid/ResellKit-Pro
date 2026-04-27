@@ -1,13 +1,17 @@
 // Service Worker - ResellKit Pro
+'use strict';
 
 // ========================
 // INIT
 // ========================
 
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log('[ResellKit] Extension installed');
-  if (details.reason === 'install') {
-    chrome.tabs.create({ url: 'popup/onboarding.html' });
+  try {
+    console.log('[ResellKit] Extension installed - v2.2.0');
+    // Don't open onboarding page - just init storage
+    initStorage().catch(err => console.error('[ResellKit] Init error:', err));
+  } catch (err) {
+    console.error('[ResellKit] onInstalled error:', err);
   }
 });
 
@@ -19,64 +23,48 @@ const DEFAULT_SETTINGS = {
   theme: 'dark',
   notifications: true,
   rolandGarrosMode: false,
-  autoCapture: true
+  autoCapture: true,
+  createdAt: new Date().toISOString()
 };
 
 async function initStorage() {
-  const { rkSettings } = await chrome.storage.local.get(['rkSettings']);
-  if (!rkSettings) {
-    await chrome.storage.local.set({ rkSettings: DEFAULT_SETTINGS });
+  try {
+    const { rkSettings, rkItems } = await chrome.storage.local.get(['rkSettings', 'rkItems']);
+    if (!rkSettings) {
+      await chrome.storage.local.set({ rkSettings: DEFAULT_SETTINGS });
+      console.log('[ResellKit] Settings initialized');
+    }
+    if (!rkItems) {
+      await chrome.storage.local.set({ rkItems: [] });
+      console.log('[ResellKit] Items initialized');
+    }
+  } catch (err) {
+    console.error('[ResellKit] Storage init failed:', err);
   }
 }
-
-async function createMenus() {
-  chrome.contextMenus.create({
-    id: 'rk-add-item',
-    title: 'Add to ResellKit',
-    contexts: ['page']
-  });
-  chrome.contextMenus.create({
-    id: 'rk-quick-add',
-    title: 'Quick Add Item',
-    contexts: ['selection']
-  });
-}
-
-async function setupAlarms() {
-  // Daily sync
-  chrome.alarms.create('rk-daily-sync', { periodInMinutes: 1440 });
-}
-
-// ========================
-// CONTEXT MENUS
-// ========================
-
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === 'rk-add-item') {
-    chrome.tabs.sendMessage(tab.id, { action: 'openQuickAdd' });
-  }
-  if (info.menuItemId === 'rk-quick-add') {
-    const text = info.selectionText;
-    chrome.storage.local.get(['rkItems'], (result) => {
-      const items = result.rkItems || [];
-      items.unshift({
-        id: Date.now().toString(36),
-        name: text,
-        type: 'article',
-        createdAt: new Date().toISOString()
-      });
-      chrome.storage.local.set({ rkItems: items });
-    });
-  }
-});
 
 // ========================
 // ALARMS
 // ========================
 
+async function setupAlarms() {
+  try {
+    // Daily sync alarm
+    chrome.alarms.create('rk-daily-sync', { periodInMinutes: 1440 });
+    console.log('[ResellKit] Alarms setup');
+  } catch (err) {
+    console.error('[ResellKit] Alarms setup failed:', err);
+  }
+}
+
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'rk-daily-sync') {
-    console.log('[ResellKit] Daily sync');
+  try {
+    if (alarm.name === 'rk-daily-sync') {
+      console.log('[ResellKit] Daily sync triggered');
+      // Perform sync operations here
+    }
+  } catch (err) {
+    console.error('[ResellKit] Alarm handler error:', err);
   }
 });
 
@@ -85,17 +73,79 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // ========================
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'getData') {
-    chrome.storage.local.get(['rkItems'], (result) => {
-      sendResponse({ data: result.rkItems || [] });
-    });
-    return true;
-  }
-  if (request.action === 'saveData') {
-    chrome.storage.local.set({ rkItems: request.data }, () => {
-      sendResponse({ success: true });
-    });
-    return true;
+  try {
+    if (!request || typeof request !== 'object') {
+      sendResponse({ success: false, error: 'Invalid request' });
+      return true;
+    }
+
+    if (request.action === 'getData') {
+      chrome.storage.local.get(['rkItems'], (result) => {
+        try {
+          const data = result?.rkItems || [];
+          sendResponse({ data, success: true });
+        } catch (err) {
+          console.error('[ResellKit] getData error:', err);
+          sendResponse({ success: false, error: err.message });
+        }
+      });
+      return true;
+    }
+    
+    if (request.action === 'saveData') {
+      if (!Array.isArray(request.data)) {
+        sendResponse({ success: false, error: 'Data must be an array' });
+        return true;
+      }
+      chrome.storage.local.set({ rkItems: request.data }, () => {
+        try {
+          if (chrome.runtime.lastError) {
+            throw new Error(chrome.runtime.lastError.message);
+          }
+          sendResponse({ success: true });
+        } catch (err) {
+          console.error('[ResellKit] saveData error:', err);
+          sendResponse({ success: false, error: err.message });
+        }
+      });
+      return true;
+    }
+    
+    if (request.action === 'getSettings') {
+      chrome.storage.local.get(['rkSettings'], (result) => {
+        try {
+          const settings = result?.rkSettings || DEFAULT_SETTINGS;
+          sendResponse({ settings, success: true });
+        } catch (err) {
+          sendResponse({ success: false, error: err.message });
+        }
+      });
+      return true;
+    }
+    
+    if (request.action === 'saveSettings') {
+      if (!request.settings || typeof request.settings !== 'object') {
+        sendResponse({ success: false, error: 'Invalid settings' });
+        return true;
+      }
+      chrome.storage.local.set({ rkSettings: request.settings }, () => {
+        try {
+          if (chrome.runtime.lastError) {
+            throw new Error(chrome.runtime.lastError.message);
+          }
+          sendResponse({ success: true });
+        } catch (err) {
+          console.error('[ResellKit] saveSettings error:', err);
+          sendResponse({ success: false, error: err.message });
+        }
+      });
+      return true;
+    }
+    
+    sendResponse({ success: false, error: 'Unknown action' });
+  } catch (err) {
+    console.error('[ResellKit] Message handler error:', err);
+    sendResponse({ success: false, error: err.message });
   }
 });
 
@@ -103,5 +153,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // STARTUP
 // ========================
 
-initStorage();
-setupAlarms();
+initStorage().catch(err => console.error('[ResellKit] Startup init failed:', err));
+setupAlarms().catch(err => console.error('[ResellKit] Startup alarms failed:', err));
+
+console.log('[ResellKit] Service Worker ready');
