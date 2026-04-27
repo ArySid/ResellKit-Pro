@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResellKit Pro</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="rk-popup">
+    <header class="rk-header">
+      <div class="rk-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span>ResellKit Pro</span>
+      </div>
+      <button class="rk-plan-badge" id="rk-plan-badge">Gratuit</button>
+    </header>
+
+    <nav class="rk-tabs">
+      <button class="rk-tab active" data-tab="dashboard">Dashboard</button>
+      <button class="rk-tab" data-tab="calculator">Calculateur</button>
+      <button class="rk-tab" data-tab="portfolio">Portfolio</button>
+      <button class="rk-tab" data-tab="alerts">Alertes</button>
+    </nav>
+
+    <main class="rk-content">
+      <!-- DASHBOARD -->
+      <section class="rk-panel active" id="panel-dashboard">
+        <div class="rk-stats-grid">
+          <div class="rk-stat-card">
+            <span class="rk-stat-label">Profit Total</span>
+            <span class="rk-stat-value rk-green" id="rk-total-profit">0 €</span>
+          </div>
+          <div class="rk-stat-card">
+            <span class="rk-stat-label">Items</span>
+            <span class="rk-stat-value" id="rk-total-items">0</span>
+          </div>
+          <div class="rk-stat-card">
+            <span class="rk-stat-label">ROI Moyen</span>
+            <span class="rk-stat-value rk-blue" id="rk-avg-roi">0%</span>
+          </div>
+          <div class="rk-stat-card">
+            <span class="rk-stat-label">Alertes</span>
+            <span class="rk-stat-value rk-yellow" id="rk-alert-count">0</span>
+          </div>
+        </div>
+        <div class="rk-section">
+          <h3>Raccourcis</h3>
+          <div class="rk-shortcuts">
+            <div class="rk-shortcut"><kbd>Ctrl+Shift+R</kbd> Ouvrir</div>
+            <div class="rk-shortcut"><kbd>Ctrl+Shift+P</kbd> Portfolio</div>
+            <div class="rk-shortcut"><kbd>Ctrl+Shift+A</kbd> Alerte</div>
+            <div class="rk-shortcut"><kbd>Ctrl+Shift+S</kbd> Panel</div>
+            <div class="rk-shortcut"><kbd>Ctrl+Shift+O</kbd> Overlay</div>
+          </div>
+        </div>
+        <div class="rk-section">
+          <h3>Roland-Garros</h3>
+          <a href="https://billetterie.fft.fr" target="_blank" class="rk-btn rk-btn-primary rk-full">Billetterie FFT</a>
+          <a href="https://billetterie.fft.fr/revente" target="_blank" class="rk-btn rk-btn-secondary rk-full">Revente Officielle</a>
+        </div>
+      </section>
+
+      <!-- CALCULATOR -->
+      <section class="rk-panel" id="panel-calculator">
+        <div class="rk-form-group">
+          <label>Prix d achat (€)</label>
+          <input type="number" id="calc-buy" placeholder="0" min="0" step="0.01">
+        </div>
+        <div class="rk-form-group">
+          <label>Prix de revente (€)</label>
+          <input type="number" id="calc-sell" placeholder="0" min="0" step="0.01">
+        </div>
+        <div class="rk-form-group">
+          <label>Plateforme</label>
+          <select id="calc-platform">
+            <option value="stockx">StockX</option>
+            <option value="goat">GOAT</option>
+            <option value="grailed">Grailed</option>
+            <option value="vinted">Vinted</option>
+            <option value="leboncoin">LeBonCoin</option>
+            <option value="ebay">eBay</option>
+            <option value="stubhub">StubHub</option>
+            <option value="viagogo">Viagogo</option>
+          </select>
+        </div>
+        <button class="rk-btn rk-btn-primary rk-full" id="calc-btn">Calculer</button>
+        <div class="rk-result" id="calc-result" style="display:none">
+          <div class="rk-result-row"><span>Frais plateforme:</span><span id="calc-fees">0 €</span></div>
+          <div class="rk-result-row"><span>Profit net:</span><span id="calc-profit" class="rk-green">0 €</span></div>
+          <div class="rk-result-row"><span>ROI:</span><span id="calc-roi" class="rk-blue">0%</span></div>
+        </div>
+      </section>
+
+      <!-- PORTFOLIO -->
+      <section class="rk-panel" id="panel-portfolio">
+        <div class="rk-toolbar">
+          <span id="rk-portfolio-count">0 items</span>
+          <button class="rk-btn rk-btn-tertiary" id="rk-export-btn">Export CSV</button>
+        </div>
+        <div class="rk-list" id="rk-portfolio-list"></div>
+      </section>
+
+      <!-- ALERTS -->
+      <section class="rk-panel" id="panel-alerts">
+        <div class="rk-form-group">
+          <label>Plateforme</label>
+          <select id="alert-platform">
+            <option value="stockx">StockX</option>
+            <option value="goat">GOAT</option>
+            <option value="vinted">Vinted</option>
+            <option value="ebay">eBay</option>
+            <option value="ticketmaster">Ticketmaster</option>
+            <option value="rolandgarros">Roland-Garros</option>
+          </select>
+        </div>
+        <div class="rk-form-group">
+          <label>Prix cible (€)</label>
+          <input type="number" id="alert-price" placeholder="0" min="0" step="0.01">
+        </div>
+        <button class="rk-btn rk-btn-primary rk-full" id="alert-btn">Creer l alerte</button>
+        <div class="rk-list" id="rk-alerts-list"></div>
+      </section>
+    </main>
+
+    <footer class="rk-footer">
+      <a href="#" id="rk-settings-link">Parametres</a>
+      <a href="#" id="rk-sidepanel-link">Ouvrir Panel</a>
+      <span id="rk-version">v2.1.0</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
