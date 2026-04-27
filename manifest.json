@@ -2,10 +2,10 @@
   "manifest_version": 3,
   "name": "ResellKit Pro",
   "short_name": "ResellKit",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Extension Chrome MV3 pour revendeurs pros — calculateur de profit, portfolio, alertes drops, Roland-Garros mode, Captcha Inbox. 100% legal, 0 bypass.",
   "author": "ResellKit",
-  "homepage_url": "https://resellkit.pro",
+  "minimum_chrome_version": "120",
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "ResellKit Pro"
@@ -19,9 +19,7 @@
     "notifications",
     "sidePanel",
     "activeTab",
-    "tabs",
-    "contextMenus",
-    "scripting"
+    "tabs"
   ],
   "host_permissions": [
     "https://*/*",
@@ -46,7 +44,7 @@
       ],
       "js": ["content/content.js"],
       "css": ["content/content.css"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "background": {
@@ -63,10 +61,10 @@
       "suggested_key": {
         "default": "Ctrl+Shift+Y"
       },
-      "description": "Open le Side Panel"
+      "description": "Open Side Panel"
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self';"
   }
 }
